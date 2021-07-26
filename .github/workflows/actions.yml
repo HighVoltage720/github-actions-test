@@ -1,10 +1,16 @@
 name: Actions Workflow
 
 on:
-  repository_dispatch:
-    types: [build]
-  pull_request:
-    types: [closed, assigned, opened, reopened]
+  push:
+    branches:
+      - master
+      - 'feature/*' # matches feature/feat1
+      - 'feature/**' #Matches feature/feat/anything
+      - '!feature/featC' #excludes featC
+    tags:
+      - v1.*
+    paths:
+      - '**.js' #only run when a .js file is pushed. 
 
 jobs:
   run-github-actions:
@@ -17,6 +23,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: List Files after checkout
+      - name: payload
+        run: echo ${{ github.event.client_payload.env }}
         run: |
           pwd
           ls -a
